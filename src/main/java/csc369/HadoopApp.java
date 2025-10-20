@@ -27,7 +27,8 @@ public class HadoopApp {
 	if (otherArgs.length < 3) {
 	    System.out.println("Expected parameters: <job class> [<input dir>]+ <output dir>");
 	    System.exit(-1);
-	} else if ("AverageTemperature".equalsIgnoreCase(otherArgs[0])) {
+	} 
+	else if ("AverageTemperature".equalsIgnoreCase(otherArgs[0])) {
 	    job.setReducerClass(AverageTemperature.ReducerImpl.class);
 	    job.setMapperClass(AverageTemperature.MapperImpl.class);
             job.setCombinerClass(AverageTemperature.CombinerImpl.class);
@@ -35,7 +36,8 @@ public class HadoopApp {
 	    job.setOutputValueClass(AverageTemperature.OUTPUT_VALUE_CLASS);
 	    FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
-	} else if ("TemperatureSort".equalsIgnoreCase(otherArgs[0])) {
+	} 
+	else if ("TemperatureSort".equalsIgnoreCase(otherArgs[0])) {
 	    job.setReducerClass(TemperatureSort.ReducerImpl.class);
 	    job.setMapperClass(TemperatureSort.MapperImpl.class);
             
@@ -47,7 +49,36 @@ public class HadoopApp {
 	    job.setOutputValueClass(TemperatureSort.OUTPUT_VALUE_CLASS);
 	    FileInputFormat.addInputPath(job, new Path(otherArgs[1]));
 	    FileOutputFormat.setOutputPath(job, new Path(otherArgs[2]));
-	} else {
+	} 
+
+	else if ("CountryRequestCount".equalsIgnoreCase(otherArgs[0])){
+    job.setReducerClass(CountryRequestCount.JoinReducer.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[1]), TextInputFormat.class, CountryRequestCount.LogMapper.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[2]), TextInputFormat.class, CountryRequestCount.CountryMapper.class);
+    job.setOutputKeyClass(org.apache.hadoop.io.Text.class);
+    job.setOutputValueClass(org.apache.hadoop.io.IntWritable.class);
+    FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
+	} 
+
+	else if ("CountryUrlCount".equalsIgnoreCase(otherArgs[0])){
+    job.setReducerClass(CountryUrlCount.JoinReducer.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[1]), TextInputFormat.class, CountryUrlCount.LogMapper.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[2]), TextInputFormat.class, CountryUrlCount.CountryMapper.class);
+    job.setOutputKeyClass(org.apache.hadoop.io.Text.class);
+    job.setOutputValueClass(org.apache.hadoop.io.IntWritable.class);
+    FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
+	} 
+
+	else if ("UrlCountryList".equalsIgnoreCase(otherArgs[0])){
+    job.setReducerClass(UrlCountryList.JoinReducer.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[1]), TextInputFormat.class, UrlCountryList.LogMapper.class);
+    MultipleInputs.addInputPath(job, new Path(otherArgs[2]), TextInputFormat.class, UrlCountryList.CountryMapper.class);
+    job.setOutputKeyClass(org.apache.hadoop.io.Text.class);
+    job.setOutputValueClass(org.apache.hadoop.io.Text.class);
+    FileOutputFormat.setOutputPath(job, new Path(otherArgs[3]));
+	}
+	
+	else {
 	    System.out.println("Unrecognized job: " + otherArgs[0]);
 	    System.exit(-1);
 	}
